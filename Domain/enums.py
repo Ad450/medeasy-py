@@ -7,7 +7,7 @@ class KYCStatus(Enum):
     REJECTED = "rejected"
 
 
-class AppointmentState(Enum):
+class AppointmentStatus(Enum):
     CREATED = "created"
     ACCEPTED = "accepted"
     REJECTED = "rejected"

@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import String, Integer, DateTime, ForeignKey, Float, Column, Enum, Table
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-from Domain.enums import KYCStatus, AppointmentState
+from Domain.enums import KYCStatus, AppointmentStatus
 
 
 class Base(DeclarativeBase):
@@ -108,7 +108,7 @@ class AppointmentState(Base):
     __table__ = "appointment_state_table"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    status = Column(Enum(AppointmentState), default=AppointmentState.CREATED, nullable=False)
+    status = Column(Enum(AppointmentStatus), default=AppointmentStatus.CREATED, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(), default=datetime.utcnow())
     updated_at: Mapped[datetime] = mapped_column(DateTime(), nullable=True)
 
@@ -223,12 +223,9 @@ class Day(Base):
         back_populates="days",
         useList=False
     )
+    appointments: Mapped[Set["Appointment"]] = relationship(
+        back_populates="day",
+        useList=True
+    )
 
-    #
-    # public Guid Id { get; set; }
-    # public DayOfWeek DayOfWeek { get; set; }
-    # public int WeekNumber { get; set; }
-    # public Guid PractitionerId { get; set; }
-    # public Practitioner? Practitioner { get; set; }
-    # public ICollection<Appointment> Appointments { get; set; } = [];
-    #
+  
