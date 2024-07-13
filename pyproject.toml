@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "medeasy-py"
+version = "0.1.0"
+description = "python version of medeasy api"
+authors = ["Ad450 <adjeimanue@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.111.0"
+sqlalchemy = "^2.0.31"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
