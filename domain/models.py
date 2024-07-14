@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import String, Integer, DateTime, ForeignKey, Float, Column, Enum, Table
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-from Domain.enums import KYCStatus, AppointmentStatus
+from domain.enums import KYCStatus, AppointmentStatus, Role
 
 
 class Base(DeclarativeBase):
@@ -18,6 +18,18 @@ practitioner_service = Table(
 )
 
 
+class User(Base):
+    __table__ = "user_table"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String(30), unique=True)
+    password:  Mapped[str] = mapped_column(String(200))
+    role = Column(Enum(Role), nullable=False)
+
+    patient = relationship("Patient", back_populates="user", uselist=False, cascade="all delete-orphan")
+    practitioner = relationship("Practitioner", back_populates="user", uselist=False, cascade="all delete-orphan")
+
+
 class Patient(Base):
     __table__ = "patient_table"
 
@@ -25,6 +37,10 @@ class Patient(Base):
     first_name: Mapped[str] = mapped_column(String(30), name="firstname")
     last_name: Mapped[str] = mapped_column(String(30), name="lastname")
     age: Mapped[int] = mapped_column(Integer(), nullable=True)
+
+    user_id : Mapped["User"] = mapped_column(Integer(), ForeignKey("user_table.id"))
+    user = relationship(back_populates="patient", userList=False)
+
     patient_profile_picture = Mapped["PatientProfilePicture"] = relationship(
         back_populates="patient", cascade="all delete-orphan",
         useList=False
@@ -127,6 +143,9 @@ class Practitioner(Base):
     first_name: Mapped[str] = mapped_column(String(30), name="firstname")
     last_name: Mapped[str] = mapped_column(String(30), name="lastname")
     age: Mapped[int] = mapped_column(Integer(), nullable=True)
+
+    user_id : Mapped["User"] = mapped_column(Integer(), ForeignKey("user_table.id"))
+    user = relationship(back_populates="practitioner", userList=False)
 
     kyc: Mapped["Kyc"] = relationship(
         back_populates="practitioner", cascade="all delete-orphan",

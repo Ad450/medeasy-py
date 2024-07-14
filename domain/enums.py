@@ -29,3 +29,9 @@ class WeekNumber(Enum):
     SECOND = 2
     THIRD = 3
     LAST = 4
+
+
+class Role(Enum):
+    PRACTITIONER= "practitioner"
+    PATIENT ="patient"
+    ALL ="all"
