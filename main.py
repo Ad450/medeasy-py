@@ -1,16 +1,15 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-
+from application.dto import RegisterUserDto
+from application.services.auth_service import AuthenticationService
 
 app = FastAPI()
 
 
-
-
-# @app.get(path="/hello")
-# def greet_hello():
-#     return {"Greeting": "hello"}
+@app.post(path="/auth/register")
+def greet_hello(userDto: RegisterUserDto):
+    return AuthenticationService().register(dto=userDto)
 
 
 # @app.get(path="/hello/{name}")

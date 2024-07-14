@@ -1,10 +1,9 @@
 from typing import TypeVar, Generic, Optional, Union
-from dotenv import load_dotenv
-import os
 
 from sqlalchemy import create_engine, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
+
 
 from domain.models import Base
 from infrastructure.env_configs import EnvironmentConfig
@@ -18,10 +17,11 @@ class BaseRepository(Generic[T]):
     def __get_connection_string(self) -> str:
         return EnvironmentConfig.get_env_variable(variable="POSTGRES_URL")
 
-    def __init__(self):
+    def __init__(self, model: T):
         connection_string = self.__get_connection_string
         engine = create_engine(connection_string)
         self.__session = sessionmaker(engine)
+        Base.metadata.create_all(engine)
 
     def save(self, item: T | list[T]) -> Optional[Union[T, list[T]]]:
         try:
@@ -33,7 +33,8 @@ class BaseRepository(Generic[T]):
                 session.commit()
                 return item
         except SQLAlchemyError as e:
-            print(f"Exception at: {e}")
+            print(f"Exception saving item: {e.code}")
+            print("We are throwing an expcetion here")
             return None
 
     def get_by_id(self, item_id: int) -> Optional[T]:

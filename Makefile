@@ -4,3 +4,5 @@ run_dev:
 
 run_prod:
 	poetry run fastapi run main.py
+migrate:
+	poetry run python run_migration.py

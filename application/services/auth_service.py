@@ -17,7 +17,7 @@ class AuthenticationService:
     def __auth_helper(self) -> AuthHelper:
         return AuthHelper()
 
-    def register(self, dto: RegisterUserDto) -> User:
+    def register(self, dto: RegisterUserDto):
         is_existing_user = self.__user_repository.get_by_email(email=dto.email)
         if is_existing_user:
             raise HTTPException(status_code=401, detail="user already exists")
@@ -30,6 +30,7 @@ class AuthenticationService:
         user_created = self.__user_repository.save(new_user)
         if not user_created:
             raise HTTPException(status_code=500, detail="could not create user")
+        print(user_created)
         return user_created
 
     def __get_role_from_dto(self, dto: RoleDto) -> Optional[Role]:
@@ -41,6 +42,7 @@ class AuthenticationService:
             return Role.PRACTITIONER
         else:
             raise HTTPException(status_code=404, detail="role not found")
+
 
     def login(self, dto: LoginUserDto):
         existing_user = self.__user_repository.get_by_email(email=dto.email)
